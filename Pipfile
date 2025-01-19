@@ -8,13 +8,13 @@ langchainhub = "*"
 black = "*"
 python-dotenv = "*"
 langchain-community = "*"
-flask = "*"
 requests = "*"
 aiohttp = "*"
 langchain-core = "*"
 openai = "*"
 langchain = "*"
 langchain-openai = "*"
+flask = "*"
 
 [dev-packages]
 

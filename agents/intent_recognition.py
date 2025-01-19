@@ -11,7 +11,7 @@ Possible actions:
 1. Add a bet to the slip (for example: "I want to bet on Manchester United to win", "Roma Over", etc.)
 2. Remove a bet from the slip
 3. Replace a bet in the slip
-4. Checkout the slip (confirm the bets, says how much to bet, etc.)
+4. Checkout the slip (confirm the bets, says how much to bet, User says 'Ok', etc.)
 
 User Input: {user_input}
 

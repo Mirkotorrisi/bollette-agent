@@ -14,7 +14,7 @@ RUN pip install pipenv && pipenv install --deploy --ignore-pipfile
 COPY . .
 
 # Epose the port the app runs on
-EXPOSE 3000
+EXPOSE 8080
 
 # Command to run the application
 CMD ["pipenv", "run", "python", "app.py"]

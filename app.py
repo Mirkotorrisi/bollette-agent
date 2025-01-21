@@ -18,4 +18,4 @@ def index():
     return jsonify(res)
 
 if __name__ == '__main__':
-    app.run(debug=os.environ.get('ENV') == 'dev', port=3000)
+    app.run(debug=os.environ.get('ENV') == 'dev', port=8080)

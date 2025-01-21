@@ -1,7 +1,6 @@
 from typing import List
 
 from agents.bet_amount_retrieval import get_bet_amount
-from agents.bet_removal import remove_bet
 from agents.intent_recognition import recognize_intent
 from agents.match_retrieval import match_retrieval
 
@@ -60,10 +59,11 @@ def process_action(session_id, input) -> ProcessActionResult:
         return {'payslip': payslip, 'message': res.message}
 
     elif action == "checkout":
-        product = 1.0
+        multiplier = 1.0
         get_bet_amount_res = get_bet_amount(input)
         if(get_bet_amount_res.amount == None):
             return get_bet_amount_res
         for match in payslip:
-            product *= match.odd
-        return { **get_bet_amount_res, 'payslip':payslip, 'multiplier': product*float(get_bet_amount_res.bet_amount) }
+            multiplier *= match.get('odd')
+        PAYSLIPS[session_id] = None
+        return {'message': get_bet_amount_res.message, 'payslip':payslip, 'max_win': multiplier*float(get_bet_amount_res.amount), 'multiplier': multiplier }

@@ -1,4 +1,4 @@
-from output_parsers import Response, TeamNames,Sign, tea_names_parser, response_parser, sign_parser
+from output_parsers import Response, TeamNames, tea_names_parser, response_parser
 from langchain_openai import ChatOpenAI
 from tools.match_list import find_match_in_list, get_match_list
 from langchain_core.prompts import PromptTemplate
@@ -66,25 +66,20 @@ def retrieve_match(teams) -> Response:
 
 def retrieve_sign(prompt:str, match) -> Response:
     print(prompt)
-    # retrieve_sign_template = '''
-    # Given a human prompt about a match {prompt}, 
-    # and a match {match}, 
-    # you must find the desired result that the user is talking about.
-    # The predicted match result is called "sign".
-    # Possible signs are: home (home team wins), away (away team wins), draw, over (more than 2 goals), under (less than 2 goals).
-    # The user could use different words to refer to the signs. For example: 1 means home, X means draw, 2 means away
-    # For example, if the user says "Inter lose" and Inter is the home team, you should return the sign "away".
-    # The user could also give the raw sign directly. For example, if the user says "Inter over 2.5" or "Inter over" you should return the sign "over".
-    # If you can't determine the sign, return null.
-    # '''
     retrieve_sign_template = '''
-    Given a human prompt about a match {prompt}, 
-    and a match {match}, 
-    Find the desired sign of the match.
+    Given a human prompt about a match {prompt}, and a match {match}, 
+    you must find the desired result that the user is talking about.
+    The predicted match result is called "sign".
+    Possible signs are: home (home team wins), away (away team wins), draw, over (more than 2 goals), under (less than 2 goals).
+    The user could use different words to refer to the signs. For example: 1 means home, X means draw, 2 means away
+    
+    Examples: 
+    If the user says "Inter over 2.5" or "Inter over" you should return the sign "over".
+    If the user says "Juve X" you should return the sign "draw".
+    If the user says "Inter lose" and Inter is the home team, you should return the sign "away".
 
-    Use this list to parse some ambiguous words:
-    1=home, X=draw, 2=away, over=more than 2 goals, under=less than 2 goals.
-
+    If you can't determine the sign, return null.
+    
     \n{format_instructions}
     '''
 

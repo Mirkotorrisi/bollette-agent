@@ -1,7 +1,15 @@
 from third_parties.bollette_calcio import fetch_tournament_data
+import threading
 
 
-tournaments_data = fetch_tournament_data(mock=False)
+tournaments_data = []
+
+def fetch_data_periodically():
+    global tournaments_data
+    tournaments_data = fetch_tournament_data(mock=False)
+    threading.Timer(300, fetch_data_periodically).start()
+
+fetch_data_periodically()
 
 def find_match_in_list(match_id: str) -> dict:
     for match in tournaments_data:

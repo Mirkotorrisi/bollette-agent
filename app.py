@@ -21,4 +21,4 @@ if __name__ == '__main__':
     print("Starting server")
     http_server = WSGIServer(('0.0.0.0', 8082), app)
     http_server.serve_forever()
-    print("Server started")
+    print("Server stopped")

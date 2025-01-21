@@ -7,6 +7,7 @@ from langchain.agents import (
     create_react_agent,
     AgentExecutor,
 )
+import os
 
 from langchain import hub
 
@@ -54,7 +55,7 @@ def retrieve_match(teams) -> Response:
 
     react_prompt = hub.pull("hwchase17/react")
     agent = create_react_agent(llm=llm, tools=tools_for_agent, prompt=react_prompt)
-    agent_executor = AgentExecutor(agent=agent, tools=tools_for_agent, verbose=True)
+    agent_executor = AgentExecutor(agent=agent, tools=tools_for_agent, verbose=os.environ.get("env") == "dev")
 
     result = agent_executor.invoke(
         input={"input": bet_place_prompt_template.format_prompt(teams=teams)},

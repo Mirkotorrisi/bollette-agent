@@ -36,7 +36,7 @@ def add_to_payslip(payslip, match, sign: str):
 def process_action(session_id, input) -> ProcessActionResult:
     payslip = PAYSLIPS[session_id]
     action = recognize_intent(input)
-    print('\nUser wants to',action)
+    print('\nUser',session_id,'wants to',action)
     if action == "add":
         res = match_retrieval(input)
         print(res)
@@ -67,3 +67,4 @@ def process_action(session_id, input) -> ProcessActionResult:
             multiplier *= match.get('odd')
         PAYSLIPS[session_id] = None
         return {'message': get_bet_amount_res.message, 'payslip':payslip, 'max_win': multiplier*float(get_bet_amount_res.amount), 'multiplier': multiplier }
+    return {'message': 'I did not understand the action', 'payslip': payslip}

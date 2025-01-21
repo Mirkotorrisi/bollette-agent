@@ -1,5 +1,5 @@
 # Use the official Python image from the Docker Hub
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -14,4 +14,4 @@ RUN pip install pipenv && pipenv install --deploy --ignore-pipfile
 COPY . .
 
 # Command to run the application
-CMD ["pipenv", "run", "python", "your_main_script.py"]
+CMD ["pipenv", "run", "python", "app.py"]

@@ -1,7 +1,6 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
-from output_parsers import Match, response_parser, Response
-
+from output_parsers import response_parser, Response
 
 
 def get_bet_amount(user_input:str) -> Response:

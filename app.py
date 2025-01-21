@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, json
 from bollette_agent import startup, process_action, PAYSLIPS
+import os
 
 load_dotenv()
 
@@ -17,4 +18,4 @@ def index():
     return jsonify(res)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=3000)
+    app.run(debug=os.environ.get('ENV') == 'dev', port=3000)

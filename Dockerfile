@@ -13,5 +13,8 @@ RUN pip install pipenv && pipenv install --deploy --ignore-pipfile
 # Copy the rest of the application code to the working directory
 COPY . .
 
+# Epose the port the app runs on
+EXPOSE 3000
+
 # Command to run the application
 CMD ["pipenv", "run", "python", "app.py"]

@@ -15,6 +15,7 @@ openai = "*"
 langchain = "*"
 langchain-openai = "*"
 flask = "*"
+gevent = "*"
 
 [dev-packages]
 

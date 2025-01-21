@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, json
 from bollette_agent import startup, process_action, PAYSLIPS
-import os
+from gevent.pywsgi import WSGIServer
 
 load_dotenv()
 
@@ -18,4 +18,7 @@ def index():
     return jsonify(res)
 
 if __name__ == '__main__':
-    app.run(debug=os.environ.get('ENV') == 'dev', port=8080)
+    print("Starting server")
+    http_server = WSGIServer(('0.0.0.0', 8082), app)
+    http_server.serve_forever()
+    print("Server started")

@@ -2,12 +2,15 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify, json
 from bollette_agent import startup, process_action, PAYSLIPS
 from gevent.pywsgi import WSGIServer
+from flask_cors import CORS, cross_origin
 
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app, support_credentials=True)
 
 @app.route('/', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def index():
     input = json.loads(request.data)['input']
     session_id = json.loads(request.data).get('session', None)

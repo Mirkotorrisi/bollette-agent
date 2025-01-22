@@ -16,6 +16,7 @@ langchain = "*"
 langchain-openai = "*"
 flask = "*"
 gevent = "*"
+flask-cors = "*"
 
 [dev-packages]
 

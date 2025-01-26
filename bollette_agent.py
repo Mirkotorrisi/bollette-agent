@@ -66,5 +66,5 @@ def process_action(session_id, input) -> ProcessActionResult:
         for match in payslip:
             multiplier *= match.get('odd')
         PAYSLIPS[session_id] = None
-        return {'message': get_bet_amount_res.message, 'payslip':payslip, 'max_win': multiplier*float(get_bet_amount_res.amount), 'multiplier': multiplier }
+        return {'message': get_bet_amount_res.message, 'amount':get_bet_amount_res.amount, 'max_win': multiplier*float(get_bet_amount_res.amount), 'multiplier': multiplier }
     return {'message': 'I did not understand the action', 'payslip': payslip}

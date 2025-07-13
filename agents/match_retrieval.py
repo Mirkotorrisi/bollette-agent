@@ -28,6 +28,7 @@ def retrieve_team_name(prompt: str) -> TeamNames:
     chain = bet_place_prompt_template | llm | tea_names_parser
 
     res:TeamNames = chain.invoke(input={'prompt': prompt })
+    print(res)
     return res
 
 
@@ -55,7 +56,7 @@ def retrieve_match(teams) -> Response:
 
     react_prompt = hub.pull("hwchase17/react")
     agent = create_react_agent(llm=llm, tools=tools_for_agent, prompt=react_prompt)
-    agent_executor = AgentExecutor(agent=agent, tools=tools_for_agent, verbose=os.environ.get("env") == "dev")
+    agent_executor = AgentExecutor(agent=agent, tools=tools_for_agent, verbose=os.environ.get("ENV") == "dev")
 
     result = agent_executor.invoke(
         input={"input": bet_place_prompt_template.format_prompt(teams=teams)},

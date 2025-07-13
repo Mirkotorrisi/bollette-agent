@@ -13,7 +13,7 @@ def fetch_tournament_data(mock: bool = False) -> Dict[str, any]:
     Returns:
         dict: A dictionary with tournament keys as keys and API responses as values.
     """
-    base_url = os.environ.get("BOLLETTE_SERVER_API_KEY")
+    base_url = os.environ.get("BOLLETTE_SERVER_BASE_URL")
     mocked_url = "https://mocked-api-url.com"  # Example mocked URL
     results = {}
 

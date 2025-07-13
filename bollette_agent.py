@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 from agents.bet_amount_retrieval import get_bet_amount
@@ -37,6 +38,7 @@ def process_action(session_id, input) -> ProcessActionResult:
     payslip = PAYSLIPS[session_id]
     action = recognize_intent(input)
     print('\nUser',session_id,'wants to',action)
+    print(os.environ.get("ENV"))
     if action == "add":
         res = match_retrieval(input)
         print(res)

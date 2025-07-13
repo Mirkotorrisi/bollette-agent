@@ -14,14 +14,14 @@ CORS(app, support_credentials=True)
 def index():
     input = json.loads(request.data)['input']
     session_id = json.loads(request.data).get('session', None)
-    try:        
-        if session_id and PAYSLIPS.get(session_id):
-            res = process_action(session_id, input)
-        else: 
-            res = startup(input)
-        return jsonify(res)
-    except Exception as e:
-        return jsonify({"message": "An error occurred, try again" })
+    # try:        
+    if session_id and PAYSLIPS.get(session_id):
+        res = process_action(session_id, input)
+    else: 
+        res = startup(input)
+    return jsonify(res)
+    # except Exception as e:
+    #     return jsonify({"message": "An error occurred, try again" })
 
 if __name__ == '__main__':
     print("Starting server")

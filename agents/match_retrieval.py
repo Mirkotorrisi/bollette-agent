@@ -11,6 +11,9 @@ import os
 
 from langchain import hub
 
+import logging
+
+
 def retrieve_team_name(prompt: str) -> TeamNames:
     get_team_template = '''
     Given a human prompt about a match {prompt}, you must find the team name and return it.
@@ -28,7 +31,7 @@ def retrieve_team_name(prompt: str) -> TeamNames:
     chain = bet_place_prompt_template | llm | tea_names_parser
 
     res:TeamNames = chain.invoke(input={'prompt': prompt })
-    print(res)
+    logging.info(res)
     return res
 
 
@@ -67,7 +70,7 @@ def retrieve_match(teams) -> Response:
 
 
 def retrieve_sign(prompt:str, match) -> Response:
-    print(prompt)
+    logging.info(prompt)
     retrieve_sign_template = '''
     Given a human prompt about a match {prompt}, and a match {match}, 
     you must find the desired result that the user is talking about.

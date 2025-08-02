@@ -12,6 +12,9 @@ from typing import Dict
 
 from tools.match_list import find_match_in_list
 
+import logging
+
+
 
 PAYSLIPS: Dict[str, List[Match]] = {}
 
@@ -37,11 +40,11 @@ def add_to_payslip(payslip, match, sign: str):
 def process_action(session_id, input) -> ProcessActionResult:
     payslip = PAYSLIPS[session_id]
     action = recognize_intent(input)
-    print('\nUser',session_id,'wants to',action)
-    print(os.environ.get("ENV"))
+    logging.info(f'User {session_id} wants to {action}')
+    logging.info(os.environ.get("ENV"))
     if action == "add":
         res = match_retrieval(input)
-        print(res)
+        logging.info(res)
         match_found = find_match_in_list(res.match_id)
         if(match_found and res.sign):
             add_to_payslip(payslip, match_found, res.sign)

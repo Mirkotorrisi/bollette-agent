@@ -2,6 +2,8 @@ import requests
 import os
 from typing import Dict
 
+import logging
+
 def fetch_tournament_data(mock: bool = False) -> Dict[str, any]:
     """
     Fetches data for all tournaments synchronously using requests.
@@ -23,7 +25,7 @@ def fetch_tournament_data(mock: bool = False) -> Dict[str, any]:
             response.raise_for_status()
             results = response.json()
         except Exception as e:
-            print(f"Error fetching mock data: {e}")
+            logging.error(f"Error fetching mock data: {e}")
         return results
 
 

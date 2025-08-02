@@ -1,7 +1,7 @@
 from third_parties.bollette_calcio import fetch_tournament_data
 import threading
 
-
+import logging
 tournaments_data = []
 
 def fetch_data_periodically():
@@ -17,7 +17,7 @@ def find_match_in_list(match_id: str) -> dict:
             return match
 
 def get_match_list(args):
-    print(args)
+    logging.info(args)
     formatted_list = []
     for match in tournaments_data:
         formatted_match = {

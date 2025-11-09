@@ -1,15 +1,11 @@
 from output_parsers import Response, TeamNames, tea_names_parser, response_parser
 from langchain_openai import ChatOpenAI
-from tools.match_list import find_match_in_list, get_match_list
+from tools.match_list import find_match_in_list, find_match_in_store
 from langchain_core.prompts import PromptTemplate
 from langchain_core.tools import Tool
-from langchain.agents import (
-    create_react_agent,
-    AgentExecutor,
-)
-import os
+from langchain.agents import create_agent 
 
-from langchain import hub
+from langchain_classic import hub
 
 import logging
 
@@ -34,41 +30,6 @@ def retrieve_team_name(prompt: str) -> TeamNames:
     logging.info(res)
     return res
 
-
-def retrieve_match(teams) -> Response:
-    bet_place_template = '''
-    Given a list of teams {teams}, you must find the fetch the match list and find the first match that the teams are about to play.
-
-    Final answer is the match id.
-    '''
-
-
-    bet_place_prompt_template = PromptTemplate(input_variables=['teams'], 
-                                             template=bet_place_template)
-
-    llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
-
-
-    tools_for_agent = [
-        Tool(
-            name ="Match list retrieval",
-            func = get_match_list,
-            description="Useful to fetch a match list",
-        )
-    ]
-
-    react_prompt = hub.pull("hwchase17/react")
-    agent = create_react_agent(llm=llm, tools=tools_for_agent, prompt=react_prompt)
-    agent_executor = AgentExecutor(agent=agent, tools=tools_for_agent, verbose=os.environ.get("ENV") == "dev")
-
-    result = agent_executor.invoke(
-        input={"input": bet_place_prompt_template.format_prompt(teams=teams)},
-        handle_parsing_errors=True
-    )
-    
-    return result['output']
-
-
 def retrieve_sign(prompt:str, match) -> Response:
     logging.info(prompt)
     retrieve_sign_template = '''
@@ -81,6 +42,8 @@ def retrieve_sign(prompt:str, match) -> Response:
     Examples: 
     If the user says "Inter over 2.5" or "Inter over" you should return the sign "over".
     If the user says "Juve X" you should return the sign "draw".
+    If the user says "Juve 2" you should return the sign "away".
+    If the user says "Juve 1" you should return the sign "home".
     If the user says "Inter lose" and Inter is the home team, you should return the sign "away".
 
     If you can't determine the sign, return null.
@@ -103,7 +66,10 @@ def retrieve_sign(prompt:str, match) -> Response:
 
 def match_retrieval(prompt:str):
     team_names_res = retrieve_team_name(prompt)
-    match_id = retrieve_match(team_names_res.team_names)
+    logging.info(team_names_res)
+    # Find match using the team names
+    search_term = " ".join(team_names_res.team_names)
+    match_id = find_match_in_store(search_term)
     match = find_match_in_list(match_id)
     response = retrieve_sign(prompt, match)
     response.match_id = match_id

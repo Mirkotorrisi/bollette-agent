@@ -10,27 +10,20 @@ def fetch_tournament_data(mock: bool = False) -> Dict[str, any]:
 
     Args:
         tournament_keys (list): A list of tournament keys (strings).
-        mock (bool): If True, fetches data from a mock endpoint.
+        mock (bool): If True, returns mock data.
 
     Returns:
         dict: A dictionary with tournament keys as keys and API responses as values.
     """
     base_url = os.environ.get("BOLLETTE_SERVER_BASE_URL")
-    mocked_url = "https://mocked-api-url.com"  # Example mocked URL
     results = {}
 
     if mock:
-        try:
-            response = requests.get(mocked_url, timeout=10)
-            response.raise_for_status()
-            results = response.json()
-        except Exception as e:
-            logging.error(f"Error fetching mock data: {e}")
-        return results
+        return {}
 
 
     try:
-        response = requests.get(base_url, timeout=10)
+        response = requests.get(base_url, timeout=20)
         response.raise_for_status()
         results = response.json()
     except requests.RequestException as e:

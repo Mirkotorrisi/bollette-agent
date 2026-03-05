@@ -9,7 +9,6 @@ def fetch_tournament_data(mock: bool = False) -> Dict[str, any]:
     Fetches data for all tournaments synchronously using requests.
 
     Args:
-        tournament_keys (list): A list of tournament keys (strings).
         mock (bool): If True, returns mock data.
 
     Returns:
@@ -23,7 +22,7 @@ def fetch_tournament_data(mock: bool = False) -> Dict[str, any]:
 
 
     try:
-        response = requests.get(base_url, timeout=20)
+        response = requests.get(base_url + "/championships/all", timeout=20)
         response.raise_for_status()
         results = response.json()
     except requests.RequestException as e:

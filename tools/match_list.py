@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from third_parties.bollette_calcio import fetch_tournament_data
 import threading
 import logging
+from typing import Any, Dict, List
 from tools.vector_store import VectorStore, EmbeddingEngine
 from logger_config import setup_logger
 
@@ -14,25 +15,53 @@ tournaments_data = []
 vector_store = VectorStore()
 embeddings_engine = EmbeddingEngine()
 
+def normalize_matches_payload(payload: Any) -> List[Dict[str, Any]]:
+    """Normalize API payload into a flat list of valid match dictionaries."""
+    normalized: List[Dict[str, Any]] = []
+
+    def walk(node: Any):
+        if isinstance(node, list):
+            for item in node:
+                walk(item)
+            return
+
+        if isinstance(node, dict):
+            teams = node.get("teams")
+            match_id = node.get("matchId")
+            if match_id is not None and isinstance(teams, list) and len(teams) >= 2:
+                normalized.append(node)
+                return
+
+            for value in node.values():
+                walk(value)
+
+    walk(payload)
+    return normalized
+
 def fetch_data_periodically():
     global tournaments_data
     logger.info("Fetching tournament data...")
-    tournaments_data = fetch_tournament_data(mock=False)
+    raw_payload = fetch_tournament_data(mock=False)
+    tournaments_data = normalize_matches_payload(raw_payload)
     logger.info(f"Fetched {len(tournaments_data)} matches")
-    
-    # Create embeddings for match strings
-    match_strings = [convert_match_to_string(match) for match in tournaments_data]
-    embeddings = embeddings_engine.encode_texts(match_strings)
-    
+
     logger.info("Updating vector store with new data...")
     vector_store.clear_matches()
-    vector_store.add_matches(tournaments_data, embeddings)
-    
+
+    if tournaments_data:
+        # Create embeddings for match strings
+        match_strings = [convert_match_to_string(match) for match in tournaments_data]
+        embeddings = embeddings_engine.encode_texts(match_strings)
+        vector_store.add_matches(tournaments_data, embeddings)
+
     threading.Timer(300, fetch_data_periodically).start()
 
 def convert_match_to_string(match: dict) -> str:
     """Convert match to format: 'Team1 Team2'"""
-    return f"{match['teams'][0]} {match['teams'][1]}"
+    teams = match.get('teams') or []
+    if len(teams) < 2:
+        return ""
+    return f"{teams[0]} {teams[1]}"
 
 # Initialize data fetching
 fetch_data_periodically()
@@ -67,7 +96,7 @@ def find_match_in_store(query: str, similarity_threshold: float = 0.7) -> str:
 def find_match_in_list(match_id: str) -> dict:
     """Find match details by match_id."""
     for match in tournaments_data:
-        if match['matchId'] == match_id:  # Note: using 'matchId' not 'id'
+        if match.get('matchId') == match_id:  # Note: using 'matchId' not 'id'
             return match
     return {}
 
@@ -76,10 +105,13 @@ def get_match_list(args):
     logging.info(args)
     formatted_list = []
     for match in tournaments_data:
+        teams = match.get('teams') or []
+        if len(teams) < 2:
+            continue
         formatted_match = {
             'id': match.get('matchId'),  # Note: using 'matchId'
-            'home': match.get('teams')[0],
-            'away': match.get('teams')[1],
+            'home': teams[0],
+            'away': teams[1],
         }
         formatted_list.append(formatted_match)
     return formatted_list

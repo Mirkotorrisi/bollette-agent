@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Ice Breaker Runner",
+            "name": "Bollette Agent Runner",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",

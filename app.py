@@ -15,7 +15,9 @@ CORS(app, support_credentials=True)
 
 agent_tag = Tag(name="agent", description="Bollette agent interaction endpoint")
 
-register_routes(app, agent_tag)
+agent_v2_tag = Tag(name="agent-v2", description="Bollette agent driven by Jev typed decisions")
+
+register_routes(app, agent_tag, agent_v2_tag)
 
 if __name__ == '__main__':
     logging.info("Starting server...")

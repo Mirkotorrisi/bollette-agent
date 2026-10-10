@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -25,6 +25,12 @@ class ProcessResponse(BaseModel):
     amount: Optional[float] = None
     max_win: Optional[float] = None
     multiplier: Optional[float] = None
+
+
+class ProcessResponseV2(ProcessResponse):
+    decision: Optional[Dict[str, Any]] = Field(
+        default=None, description="Raw Jev answers (choices, probabilities, confidence) behind this response"
+    )
 
 
 class ErrorResponse(BaseModel):

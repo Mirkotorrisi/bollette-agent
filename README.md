@@ -130,6 +130,26 @@ Example `400` / `500` response:
 }
 ```
 
+### `POST /v2`
+
+Same request and response contract as `POST /`, but every decision is made by
+[Jev](https://openrouter.ai/docs/guides/community/jev) (`typesafe/jev-1.13`) through the OpenRouter
+Decisions API instead of LLM prompts and embedding search:
+
+- one call asks intent, which slip bet and which match (with a yes/no check that the match exists) in parallel
+- for `add`/`replace`, a second call picks the sign (`home`, `draw`, `away`, `over`, `under`, `gg`, `ng`) for the selected match
+- the bet amount is a Jev choice over common stakes (1–30, 35–100 by 5, … up to 5000), asked in the first call;
+  when the stake is not in the set, Jev is unsure, or the digits typed don't match Jev's pick (e.g. "7,33"),
+  the v1 OpenAI `get_bet_amount` is used as fallback (`decision.amount_source` says which one answered)
+- messages are templates, since Jev returns probabilities, not text
+
+The response adds a `decision` field with the raw Jev answers (choices, probabilities, confidence).
+The thresholds at the top of `bollette_agent_v2.py` are starting points to tune on real prompts.
+
+Requires `OPENROUTER_API_KEY`. `JEV_MODEL` overrides the model (e.g. `~typesafe/jev-latest`).
+
+Tests: `python -m unittest discover -s tests -t .`
+
 ## Notes
 
 - Payslips are stored in memory (`PAYSLIPS` dict), so data is reset when the process restarts.
